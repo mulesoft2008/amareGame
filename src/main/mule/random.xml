@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="aa735e7a-70f5-4e49-9d66-98e85a9731bd" >
+		<http:listener-connection host="0.0.0.0" port="8085">
+		</http:listener-connection>
+	</http:listener-config>
+	<flow name="randomFlow" doc:id="e6a7a015-e059-470d-9f13-2db0e2725c37" >
+		<http:listener doc:name="Listener" doc:id="8cf91f0f-4eaa-4907-a123-e38a7b93ebf4" config-ref="HTTP_Listener_config" path="/{id}" outputMimeType="application/json"/>
+		<ee:transform doc:name="Transform Message" doc:id="8b93d38f-27b9-4927-b14d-0792d530601c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+var human =  (if(lower(attributes.uriParams.id) == "r") 0 
+else if(lower(attributes.uriParams.id) == "s") 1
+else if(lower(attributes.uriParams.id) == "p")  2
+
+else 6)
+as  Number
+
+var random = randomInt(2)  as Number
+---
+if ( (human== 2 and random ==0) or
+    (human== 0 and random ==1) or 
+    (human== 1 and random ==2) ) 
+    
+    {
+	"Winner": "ተጫዋች አሸፏል",
+	"player": if ( human == 0 ) "Rock" 
+	          else if ( human == 1 ) "Sisor"
+	           else "paper",
+	"computer": if ( random == 0 ) "Rock" 
+	          else if ( random == 1 ) "Sisor"
+	           else "paper"
+     }
+
+else
+if ( (human== 2 and random ==1) or
+       (human== 0 and random ==2) or 
+       (human== 1 and random ==0) ) 
+       
+          {       	
+	      "Winner": "ኮምፒውተሩ አሸፏል",
+	      "player": if ( human == 0 ) "Rock" 
+	          else if ( human == 1 ) "Sisor"
+	           else "paper",
+	      "computer": if ( random == 0 ) "Rock" 
+	          else if ( random == 1 ) "Sisor"
+	           else "paper"
+          }
+
+else
+if ( (human== 2 and random ==2) or
+      (human== 0 and random ==0) or 
+      (human== 1 and random ==1) 
+      ) 
+     
+      
+      {
+	   "Winner": "ማንም አላሸነፈም እኩል",
+	    "player": if ( human == 0 ) "Rock" 
+	          else if ( human == 1 ) "Sisor"
+	           else "paper",
+	    "computer": if ( random == 0 ) "Rock" 
+	          else if ( random == 1 ) "Sisor"
+	           else "paper"
+      }
+
+
+else {
+	  "ስህተት": "እባኮትን እንደገና ይጫወቱ  ለጠጠር      r ለመቀስ   s ወረቀት  p ያስገቡ"
+	   
+     }
+   ]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+			</ee:variables>
+		</ee:transform>
+	</flow>
+</mule>

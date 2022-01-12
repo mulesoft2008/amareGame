@@ -1,0 +1,27 @@
+{
+  "configs": [
+    "random.xml"
+  ],
+  "secureProperties": [],
+  "redeploymentEnabled": true,
+  "name": "game:random:1.0.0-SNAPSHOT",
+  "minMuleVersion": "4.3.0",
+  "requiredProduct": "MULE_EE",
+  "classLoaderModelLoaderDescriptor": {
+    "id": "mule",
+    "attributes": {
+      "exportedPackages": [],
+      "exportedResources": [
+        "application-types.xml",
+        "log4j2.xml",
+        "mule.jks",
+        "mule.pkcs12",
+        "random.xml"
+      ]
+    }
+  },
+  "bundleDescriptorLoader": {
+    "id": "mule",
+    "attributes": {}
+  }
+}
